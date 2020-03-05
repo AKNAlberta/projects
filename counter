@@ -1,0 +1,52 @@
+var incrementAmount =  41.70;
+var incrementDuration = 1000;
+
+window.onload = function() {
+	startDate("May 01, 2017 00:00:00 EST");
+};
+
+function startDate(x) {
+	var rightNow = new Date();
+	x = new Date(x);
+	var difference = rightNow - x;
+	var currentAmount = (incrementAmount * (difference / 1000))
+  var formattedAmount = currentAmount.formatMoney(2);
+	clearTimeout(startDate.to);
+	startDate.to = setTimeout(function() {
+		startDate(x);
+	}, incrementDuration);
+  animateCount(currentAmount, currentAmount + incrementAmount);
+}
+
+function animateCount(currentValue, nextValue){
+    var perSecondText = $("#perSecond");
+		console.log(currentValue, nextValue);
+    $("#perSecond").prop('counter', currentValue).animate({
+      counter: nextValue
+    },
+    {
+      duration: incrementDuration,
+      easing:'linear',
+      step: function() {
+        perSecondText.text("$ " + this.counter.formatMoney(2));
+      }
+    }); 
+}
+
+// Plug-in to combact safari's incompatibility with .toLocaleString() 
+Number.prototype.formatMoney = function(c, d, t) {
+	var n = this,
+		c = isNaN((c = Math.abs(c))) ? 2 : c,
+		d = d == undefined ? "." : d,
+		t = t == undefined ? "," : t,
+		s = n < 0 ? "-" : "",
+		i = String(parseInt((n = Math.abs(Number(n) || 0).toFixed(c)))),
+		j = (j = i.length) > 3 ? j % 3 : 0;
+	return (
+		s +
+		(j ? i.substr(0, j) + t : "") +
+		i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+		(c ? d + Math.abs(n - i).toFixed(c).slice(2) : "")
+	);
+};
+
